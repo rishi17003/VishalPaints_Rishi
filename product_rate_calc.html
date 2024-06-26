@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Rate Calculator</h2>
+        <div id="materialFields">
+            <div class="materialField">
+                <label for="materialType1">Material Type:</label>
+                <select id="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
+                    <option value="Pigment">Pigment</option>
+                    <option value="Additive">Additive</option>
+                    <option value="Resin">Resin</option>
+                    <option value="Thinner">Thinner</option>
+                </select>
+                <label for="materialName1">Material Name:</label>
+                <select id="materialName1">
+                </select>
+                <label for="quantity1">Quantity:</label>
+                <input type="number" id="quantity1" placeholder="Enter quantity...">
+            </div>
+        </div>
+        <button onclick="addMaterialField()">Add Material</button>
+        <button onclick="calculateTotalRate()">Calculate Total Rate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const materialNames = {
+            Pigment: ["P1", "P11", "P6", "P3", "P4", "P5", "P60", "P7", "P100", "P50", "P70", "Redoxide Powder", "White Whiting", "Talc"],
+            Additive: ["A1", "A2", "HCO", "ACE", "PINCOIL", "BRIGHT", "CATALYST MATT", "ICLAY", "ICLAY JELLY 10%", "LEAK 10%", "OMEGA", "DH"],
+            Resin:["M1 50%", "M1 70%", "M6", "M0 70%", "MD", "MD 60%","R 920", "DBTL", "927", "1030"],
+            Thinner:["S1", "C1", "S6", "S20", "BA(kg)", "BA(Lit)", "ETHYLE"]
+        };
+
+        function populateMaterialNames(materialTypeSelectId, materialNameSelectId) {
+            const materialType = document.getElementById(materialTypeSelectId).value;
+            const materialNameSelect = document.getElementById(materialNameSelectId);
+            materialNameSelect.innerHTML = ''; // Clear previous options
+            materialNames[materialType].forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                materialNameSelect.appendChild(option);
+            });
+        }
+
+        function addMaterialField() {
+            const materialFields = document.getElementById('materialFields');
+            const newIndex = materialFields.children.length + 1;
+            const newField = document.createElement('div');
+            newField.className = 'materialField';
+            newField.innerHTML = `
+                <label for="materialType${newIndex}">Material Type:</label>
+                <select id="materialType${newIndex}" onchange="populateMaterialNames('materialType${newIndex}', 'materialName${newIndex}')">
+                    <option value="Pigment">Pigment</option>
+                    <option value="Additive">Additive</option>
+                    <option value="Resin">Resin</option>
+                    <option value="Thinner">Thinner</option>
+                </select>
+                <label for="materialName${newIndex}">Material Name:</label>
+                <select id="materialName${newIndex}">
+                </select>
+                <label for="quantity${newIndex}">Quantity:</label>
+                <input type="number" id="quantity${newIndex}" placeholder="Enter quantity...">
+            `;
+            materialFields.appendChild(newField);
+        }
+
+        function calculateTotalRate() {
+            const materialFields = document.querySelectorAll('.materialField');
+            let totalRate = 0;
+
+            materialFields.forEach((field, index) => {
+                const materialName = document.getElementById(`materialName${index + 1}`).value;
+                const materialType = document.getElementById(`materialType${index + 1}`).value;
+                const quantity = parseInt(document.getElementById(`quantity${index + 1}`).value);
+
+                // Sample rate calculation logic (replace with your actual rate calculation logic)
+                const ratePerUnit = 2.5; // Assuming a rate of $2.5 per unit for demonstration
+                const rate = quantity * ratePerUnit;
+                totalRate += rate;
+            });
+
+            document.getElementById('result').innerHTML = `The total calculated rate is: $${totalRate.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
