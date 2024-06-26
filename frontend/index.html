@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Inventory Details - Inventory Management System</title>
+    <title>Home - Inventory Management System</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,27 +20,8 @@
         </nav>
     </header>
     <main>
-        <h2>Inventory Details</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Material ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for material in raw_materials %}
-                <tr>
-                    <td>{{ material[0] }}</td>
-                    <td>{{ material[1] }}</td>
-                    <td>{{ material[2] }}</td>
-                    <td>{{ material[3] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <h2>Welcome to the Inventory Management System</h2>
+        <p>Use the navigation bar to manage products and raw materials, calculate product rates, and view history.</p>
     </main>
 </body>
 </html>

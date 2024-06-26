@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Rate Calculator - Inventory Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Inventory Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="product_rate_calculator.html">Product Rate Calculator</a></li>
+                <li><a href="product_history.html">Product History</a></li>
+                <li><a href="raw_material_management.html">Raw Material Management</a></li>
+                <li><a href="inventory_details.html">Inventory Details</a></li>
+                <li><a href="raw_material_history.html">Raw Material History</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Product Rate Calculator</h2>
+        <form method="POST">
+            <label for="product_name">Product Name:</label>
+            <input type="text" id="product_name" name="product_name" required><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea><br>
+            <label for="yield">Yield:</label>
+            <input type="number" id="yield" name="yield" required><br>
+            <label for="raw_materials">Raw Materials:</label><br>
+            <div id="materialFields">
+                <div class="materialField">
+                    <label for="materialType1">Material Type:</label>
+                    <select id="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
+                        <option value="Pigment">Pigment</option>
+                        <option value="Additive">Additive</option>
+                        <option value="Resin">Resin</option>
+                        <option value="Thinner">Thinner</option>
+                    </select>
+                    <label for="materialName1">Material Name:</label>
+                    <select id="materialName1">
+                    </select>
+                    <label for="quantity1">Quantity:</label>
+                    <input type="number" id="quantity1" placeholder="Enter quantity...">
+                </div>
+            </div>
+            <button type="button" onclick="addMaterialField()">Add Material</button>
+            <button type="button" onclick="calculateTotalRate()">Calculate Total Rate</button>
+            <div id="result"></div>
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <script>
+        const materialNames = {
+            Pigment: ["P1", "P11", "P6", "P3", "P4", "P5", "P60", "P7", "P100", "P50", "P70", "Redoxide Powder", "White Whiting", "Talc"],
+            Additive: ["A1", "A2", "HCO", "ACE", "PINCOIL", "BRIGHT", "CATALYST MATT", "ICLAY", "ICLAY JELLY 10%", "LEAK 10%", "OMEGA", "DH"],
+            Resin: ["M1 50%", "M1 70%", "M6", "M0 70%", "MD", "MD 60%", "R 920", "DBTL", "927", "1030"],
+            Thinner: ["S1", "C1", "S6", "S20", "BA(kg)", "BA(Lit)", "ETHYLE"]
+        };
+
+        function populateMaterialNames(materialTypeSelectId, materialNameSelectId) {
+            const materialType = document.getElementById(materialTypeSelectId).value;
+            const materialNameSelect = document.getElementById(materialNameSelectId);
+            materialNameSelect.innerHTML = ''; // Clear previous options
+            materialNames[materialType].forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                materialNameSelect.appendChild(option);
+            });
+        }
+
+        function addMaterialField() {
+            const materialFields = document.getElementById('materialFields');
+            const newIndex = materialFields.children.length + 1;
+            const newField = document.createElement('div');
+            newField.className = 'materialField';
+            newField.innerHTML = `
+                <label for="materialType${newIndex}">Material Type:</label>
+                <select id="materialType${newIndex}" onchange="populateMaterialNames('materialType${newIndex}', 'materialName${newIndex}')">
+                    <option value="Pigment">Pigment</option>
+                    <option value="Additive">Additive</option>
+                    <option value="Resin">Resin</option>
+                    <option value="Thinner">Thinner</option>
+                </select>
+                <label for="materialName${newIndex}">Material Name:</label>
+                <select id="materialName${newIndex}">
+                </select>
+                <label for="quantity${newIndex}">Quantity:</label>
+                <input type="number" id="quantity${newIndex}" placeholder="Enter quantity...">
+            `;
+            materialFields.appendChild(newField);
+        }
+
+        function calculateTotalRate() {
+            const materialFields = document.querySelectorAll('.materialField');
+            let totalRate = 0;
+
+            materialFields.forEach((field, index) => {
+                const materialName = document.getElementById(`materialName${index + 1}`).value;
+                const materialType = document.getElementById(`materialType${index + 1}`).value;
+                const quantity = parseInt(document.getElementById(`quantity${index + 1}`).value);
+
+                // Sample rate calculation logic (replace with your actual rate calculation logic)
+                const ratePerUnit = 2.5; // Assuming a rate of $2.5 per unit for demonstration
+                const rate = quantity * ratePerUnit;
+                totalRate += rate;
+            });
+
+            document.getElementById('result').innerHTML = `The total calculated rate is: $${totalRate.toFixed(2)}`;
+        }
+
+        // Initialize the first material name dropdown
+        document.addEventListener('DOMContentLoaded', () => {
+            populateMaterialNames('materialType1', 'materialName1');
+        });
+    </script>
+</body>
+</html>
+
