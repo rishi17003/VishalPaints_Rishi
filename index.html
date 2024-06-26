@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISHAL PAINTS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .splash-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #333;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.loaded {
+            overflow: auto;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: #fff;
+            color: #333;
+            padding: 20px 0;
+            position: fixed;
+            width: 200px;
+            height: 100%;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .logo img {
+            width: 50px;
+            height: auto;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1);
+        }
+
+        .logo h1 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .logo:hover h1 {
+            color: #ffc107;
+        }
+
+        .auth-buttons {
+            position: fixed;
+            top: 20px;
+            right: 220px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons button {
+            background-color: #ffc107;
+            border: none;
+            color: #333;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #333;
+        }
+
+        nav ul {
+            list-style-type: none;
+            width: 100%;
+            padding-top: 80px;
+        }
+
+        nav ul li {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            padding: 10px 0;
+            display: block;
+            transition: color 0.3s, background-color 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: #333;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+        }
+
+        section {
+            padding: 100px 20px;
+            margin-right: 220px;
+            display: none;
+        }
+
+        .active-section {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2.5em;
+            animation: fadeInDown 1s;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .service {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .service:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .service h3 {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .service p {
+            color: #666;
+        }
+
+        #contact {
+            background-color: #f9f9f9;
+            padding: 50px 0;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 50px auto;
+            display: none;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container input {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            padding: 10px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container button:hover {
+            background-color: #555;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen">Hello, Namaste</div>
+
+    <header>
+        <div class="auth-buttons">
+            <button onclick="showSection('signup')">Sign Up</button>
+            <button onclick="showSection('login')">Log In</button>
+        </div>
+        <div class="logo">
+            <img src="logo.png" alt="VISHAL PAINTS">
+            <h1>VISHAL PAINTS</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="showSection('home')">Home</a></li>
+                <li><a onclick="showSection('about')">About Us</a></li>
+                <li><a onclick="showSection('services')">Services</a></li>
+                <li><a onclick="showSection('products')">Products</a></li>
+                <li><a onclick="showSection('contact')">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="active-section">
+        <div class="container">
+            <h2>Welcome to VISHAL PAINTS</h2>
+            <p>Vishal Paints is a 29 years 11 months old Proprietorship Firm incorporated on 04-Jul-1994, having its registered office located at N48, Hingna Midc, Near Vicco Laboratories, Nagpur, Maharashtra.
+                The major activity of Vishal Paints is Manufacturing, Sub-classified into Manufacture of chemicals and chemical products and is primarily engaged in the Manufacture of paints and varnishes enamels or lacquers.
+                Vishal Paints is classified as Micro enterprise in the financial year 2021-22. It has its unit situated at Nagpur, Maharashtra.</p>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <p>Organisation Details
+
+                Name of Enterprise:
+                Vishal Paints
+                
+                Type of Enterprise:
+                Micro 2021-22 (02-Nov-2021)
+                
+                Organisation Type:
+                Proprietary
+                
+                Date of Incorporation:
+                04-Jul-1994
+                
+                Major Activity:
+                Manufacturing
+                
+                Social Category:
+                Obc
+                
+                Date of Commencement of Production/Business:
+                04-Jul-1994</p>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="service">
+                <h3>Service 1</h3>
+                <p>We offer top-notch residential painting services to make your home look beautiful and inviting.</p>
+            </div>
+            <div class="service">
+                <h3>Service 2</h3>
+                <p>Our commercial painting services are perfect for offices, retail spaces, and other commercial buildings.</p>
+            </div>
+            <div class="service">
+                <h3>Service 3</h3>
+                <p>We also provide specialized painting services for industrial facilities, ensuring durability and quality.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="products">
+        <div class="container">
+            <h2>Our Products</h2>
+            <p>Explore our wide range of high-quality paints and coatings that cater to all your needs.</p>
+            <div class="service">
+                <h3>Product 1</h3>
+                <p>Eco-friendly paints that are safe for your family and the environment.</p>
+            </div>
+            <div class="service">
+                <h3>Product 2</h3>
+                <p>Durable exterior paints that withstand harsh weather conditions.</p>
+            </div>
+            <div class="service">
+                <h3>Product 3</h3>
+                <p>Specialized coatings for industrial applications to ensure long-lasting protection.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <p>We'd love to hear from you! Reach out to us with any questions or to schedule a consultation.</p>
+            <p>Email: info@vishalpaints.com</p>
+            <p>Phone: +123-456-7890</p>
+            <p>Address: Nagpur, Nagpur, Maharashtra
+                Vishal Paints, N48, Hingna Midc, Nagpur, Near Vicco Laboratories, Hingna Midc, Nagpur, Nagpur, Maharashtra, 440022</p>
+        </div>
+    </section>
+
+    <div class="form-container" id="signup">
+        <h2>Sign Up</h2>
+        <form>
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="tel" name="phone" placeholder="Phone" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <div class="form-container" id="login">
+        <h2>Log In</h2>
+        <form>
+            <input type="text" name="email" placeholder="Email or Mobile" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 VISHAL PAINTS. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.querySelector('.splash-screen');
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+                document.body.classList.add('loaded');
+            }, 3000); // 3 seconds before fading out
+        });
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            const forms = document.querySelectorAll('.form-container');
+            sections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+            forms.forEach(form => {
+                form.style.display = 'none';
+            });
+            document.getElementById(sectionId).classList.add('active-section');
+            if (sectionId === 'signup' || sectionId === 'login') {
+                document.getElementById(sectionId).style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
