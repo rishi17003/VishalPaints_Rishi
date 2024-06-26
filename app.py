@@ -1,4 +1,4 @@
-from flask import *
+from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
@@ -6,9 +6,8 @@ from mysql.connector import connect
 import io
 from flask import send_file
 
-
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = db['localhost']
+app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'aloobhujiya'
 app.config['MYSQL_DB'] = 'vishalpaints'
@@ -38,10 +37,11 @@ def product_rate_calculator():
 
         cur.execute("INSERT INTO products (product_name, description, yield, total_rate) VALUES (%s, %s, %s, %s)",
                     (product_name, description, yield_amount, total_rate))
+        product_id = cur.lastrowid
         mysql.connection.commit()
         cur.close()
         
-        return redirect(url_for('invoice', product_id=cur.lastrowid))
+        return redirect(url_for('invoice', product_id=product_id))
 
     cur = mysql.connection.cursor()
     cur.execute("SELECT name FROM raw_materials")

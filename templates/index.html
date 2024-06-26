@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Inventory Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Inventory Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('product_rate_calculator') }}">Product Rate Calculator</a></li>
+                <li><a href="{{ url_for('product_history') }}">Product History</a></li>
+                <li><a href="{{ url_for('raw_material_management') }}">Raw Material Management</a></li>
+                <li><a href="{{ url_for('inventory_details') }}">Inventory Details</a></li>
+                <li><a href="{{ url_for('raw_material_history') }}">Raw Material History</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Welcome to the Inventory Management System</h2>
+        <p>Use the navigation bar to manage products and raw materials, calculate product rates, and view history.</p>
+    </main>
+</body>
+</html>
