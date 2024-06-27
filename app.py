@@ -9,7 +9,7 @@ from flask import send_file
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'rishi@271'
+app.config['MYSQL_PASSWORD'] = 'aloobhujiya'
 app.config['MYSQL_DB'] = 'vishalpaints'
 
 mysql = MySQL(app)

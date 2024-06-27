@@ -23,26 +23,47 @@
         <h2>Product Rate Calculator</h2>
         <form method="POST">
             <label for="product_name">Product Name:</label>
-            <input type="text" id="product_name" name="product_name" required><br>
+            <input type="text" id="product_name" name="product_name" required>
+            
             <label for="description">Description:</label>
-            <textarea id="description" name="description"></textarea><br>
+            <textarea id="description" name="description"></textarea>
+            
             <label for="yield">Yield:</label>
-            <input type="number" id="yield" name="yield" required><br>
-            <label for="raw_materials">Raw Materials:</label><br>
+            <input type="number" id="yield" name="yield" required>
+            
+            <label for="viscosity">Viscosity:</label>
+            <input type="number" id="viscosity" name="viscosity" required>
+            
+            <label for="weight_lit">Weight / Lit:</label>
+            <input type="number" id="weight_lit" name="weight_lit" required>
+            
+            <label for="container_cost">Container Cost:</label>
+            <input type="number" id="container_cost" name="container_cost" required>
+            
+            <label for="transport_cost">Transport Cost:</label>
+            <input type="number" id="transport_cost" name="transport_cost" required>
+            
+            <label for="sales_cost">Sales Cost:</label>
+            <input type="number" id="sales_cost" name="sales_cost" required>
+            
+            <label for="misc_cost">Misc. Cost:</label>
+            <input type="number" id="misc_cost" name="misc_cost" required>
+            
+            <label for="raw_materials">Raw Materials:</label>
             <div id="materialFields">
                 <div class="materialField">
                     <label for="materialType1">Material Type:</label>
-                    <select id="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
+                    <select id="materialType1" name="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
                         <option value="Pigment">Pigment</option>
                         <option value="Additive">Additive</option>
                         <option value="Resin">Resin</option>
                         <option value="Thinner">Thinner</option>
                     </select>
                     <label for="materialName1">Material Name:</label>
-                    <select id="materialName1">
+                    <select id="materialName1" name="materialName1">
                     </select>
                     <label for="quantity1">Quantity:</label>
-                    <input type="number" id="quantity1" placeholder="Enter quantity...">
+                    <input type="number" id="quantity1" name="quantity1" placeholder="Enter quantity...">
                 </div>
             </div>
             <button type="button" onclick="addMaterialField()">Add Material</button>
