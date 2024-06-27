@@ -9,7 +9,7 @@ from flask import send_file
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'aloobhujiya'
+app.config['MYSQL_PASSWORD'] = 'rishi@271'
 app.config['MYSQL_DB'] = 'vishalpaints'
 
 mysql = MySQL(app)
@@ -44,9 +44,13 @@ def product_rate_calculator():
         return redirect(url_for('invoice', product_id=product_id))
 
     cur = mysql.connection.cursor()
-    cur.execute("SELECT name FROM raw_materials")
+    cur.execute("SELECT name, mat_type FROM raw_materials")
     raw_materials = cur.fetchall()
     cur.close()
+
+    # material_dict = {'Pigment': [], 'Additive': [], 'Resin': [], 'Thinner': []}
+    # for name, mat_type in raw_materials:
+    #     material_dict[mat_type].append(name)
 
     return render_template('product_rate_calculator.html', raw_materials=raw_materials)
 
@@ -73,7 +77,7 @@ def raw_material_management():
         return redirect(url_for('raw_material_management'))
 
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM raw_materials")
+    cur.execute("SELECT id,name,price,mat_type FROM raw_materials")
     raw_materials = cur.fetchall()
     cur.close()
     return render_template('raw_material_management.html', raw_materials=raw_materials)
