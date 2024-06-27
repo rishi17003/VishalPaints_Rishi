@@ -9,7 +9,8 @@ CREATE TABLE products (
 );
 
 CREATE TABLE raw_materials (
-    name VARCHAR(255) PRIMARY KEY,
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     mat_type VARCHAR(255) NOT NULL
 );
@@ -59,12 +60,19 @@ INSERT INTO raw_materials (name, price, mat_type) VALUES
     ('BA (Lit)', 116.50, 'Thinner'),
     ('ETHYLE', 230.00, 'Thinner');
 
+
+DESCRIBE raw_materials;
+
+DROP TABLE IF EXISTS product_raw_materials;
+
 CREATE TABLE product_raw_materials (
     product_id INT,
     material_id INT,
     quantity DECIMAL(10, 2),
-    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (material_id) REFERENCES raw_materials(id)
 );
 
+
+select * from raw_materials;
 
