@@ -140,3 +140,68 @@ button:hover {
     margin-top: 10px;
     text-align: center;
 }
+
+/* Additional Styles for Raw Material Management Page */
+#materialsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+#materialsTable, #materialsTable th, #materialsTable td {
+    border: 1px solid #ddd;
+}
+
+#materialsTable th, #materialsTable td {
+    padding: 12px;
+    text-align: left;
+}
+
+#materialsTable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#addMaterialBtn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#addMaterialBtn:hover {
+    background-color: #45a049;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #e53935;
+}
+
+/* Save Button */
+.save-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.save-btn:hover {
+    background-color: #45a049;
+}

@@ -54,6 +54,7 @@
                 <div class="materialField">
                     <label for="materialType1">Material Type:</label>
                     <select id="materialType1" name="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
+                        <option value="" disabled selected>None</option>
                         <option value="Pigment">Pigment</option>
                         <option value="Additive">Additive</option>
                         <option value="Resin">Resin</option>
@@ -70,10 +71,66 @@
             <button type="button" onclick="calculateTotalRate()">Calculate Total Rate</button>
             <div id="result"></div>
             <button type="submit">Submit</button>
+            <button type="button" onclick="generateInvoice()">Generate Invoice</button>
         </form>
     </main>
 
     <script>
+        const materialPrices = {
+            Pigment: {
+                "P1": 227,
+                "P11": 109,
+                "P6": 170,
+                "P3": 560,
+                "P4": 158,
+                "P5": 109,
+                "P60": 59,
+                "P7": 115,
+                "P100": 35,
+                "P50": 125,
+                "P70": 130,
+                "Redoxide Powder": 15,
+                "White Whiting": 25,
+                "Talc": 104
+
+            },
+            Additive: {
+                "A1": 162,
+                "A2": 150,
+                "HCO": 150,
+                "ACE": 600,
+                "PINCOIL": 150,
+                "BRIGHT": 600,
+                "CATALYST MATT": 225,
+                "ICLAY": 308,
+                "ICLAY JELLY 10%": 250,
+                "LEAK 10%": 108,
+                "OMEGA": 55,
+                "DH": 134
+            },
+            Resin: {
+                "M1 50%": 125,
+                "M1 70%": 124,
+                "M6": 206,
+                "Mo 70%": 220,
+                "MD": 129,
+                "MD 60%": 125,
+                "R 920": 160,
+                "DBTL": 40,
+                "927": 109,
+                "1030": 135
+
+            },
+            Thinner: {
+                "S1": 100,
+                "C1": 1,
+                "S6": 128.5,
+                "S20": 47.5,
+                "BA(kg)": 135,
+                "BA(Lit)": 116.5,
+                "ETHYLE": 230               
+            }
+        };
         const materialNames = {
             Pigment: ["P1", "P11", "P6", "P3", "P4", "P5", "P60", "P7", "P100", "P50", "P70", "Redoxide Powder", "White Whiting", "Talc"],
             Additive: ["A1", "A2", "HCO", "ACE", "PINCOIL", "BRIGHT", "CATALYST MATT", "ICLAY", "ICLAY JELLY 10%", "LEAK 10%", "OMEGA", "DH"],
@@ -123,20 +180,21 @@
                 const materialName = document.getElementById(`materialName${index + 1}`).value;
                 const materialType = document.getElementById(`materialType${index + 1}`).value;
                 const quantity = parseInt(document.getElementById(`quantity${index + 1}`).value);
-
-                // Sample rate calculation logic (replace with your actual rate calculation logic)
-                const ratePerUnit = 2.5; // Assuming a rate of $2.5 per unit for demonstration
-                const rate = quantity * ratePerUnit;
+                const price=materialPrices[materialType][materialName];
+                const rate = quantity * price;
                 totalRate += rate;
             });
 
-            document.getElementById('result').innerHTML = `The total calculated rate is: $${totalRate.toFixed(2)}`;
+            document.getElementById('result').innerHTML = `The total calculated rate is: Rs ${totalRate.toFixed(2)}`;
         }
 
-        // Initialize the first material name dropdown
         document.addEventListener('DOMContentLoaded', () => {
             populateMaterialNames('materialType1', 'materialName1');
         });
+        function generateInvoice() {
+        const formData = new FormData(document.querySelector('form'));
+        window.location.href = '/generate_invoice?' + new URLSearchParams(formData).toString();
+    }
     </script>
 </body>
 </html>
