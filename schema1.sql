@@ -2,12 +2,13 @@ create database vishalpaints;
 use vishalpaints;
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
     description TEXT,
-    price DECIMAL(10, 2) NOT NULL
+    yield int,
+    total_rate DECIMAL(10, 2) NOT NULL
     
 );
-
+drop table products;
 CREATE TABLE raw_materials (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -76,3 +77,16 @@ CREATE TABLE product_raw_materials (
 
 select * from raw_materials;
 
+describe products;
+
+select* from products;
+
+ALTER TABLE products MODIFY total_rate DECIMAL(15,2);
+
+ALTER TABLE products
+ADD COLUMN viscosity DECIMAL(10, 2) NOT NULL,
+ADD COLUMN weight_lit DECIMAL(10, 2) NOT NULL,
+ADD COLUMN container_cost DECIMAL(10, 2) NOT NULL,
+ADD COLUMN transport_cost DECIMAL(10, 2) NOT NULL,
+ADD COLUMN sales_cost DECIMAL(10, 2) NOT NULL,
+ADD COLUMN misc_cost DECIMAL(10, 2) NOT NULL;

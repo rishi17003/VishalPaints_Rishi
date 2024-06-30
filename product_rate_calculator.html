@@ -21,28 +21,49 @@
     </header>
     <main>
         <h2>Product Rate Calculator</h2>
-        <form method="POST">
+        <form method="POST" action="{{ url_for('product_rate_calculator') }}">
             <label for="product_name">Product Name:</label>
-            <input type="text" id="product_name" name="product_name" required><br>
+            <input type="text" id="product_name" name="product_name" required>
+            
             <label for="description">Description:</label>
-            <textarea id="description" name="description"></textarea><br>
+            <textarea id="description" name="description"></textarea>
+            
             <label for="yield">Yield:</label>
-            <input type="number" id="yield" name="yield" required><br>
-            <label for="raw_materials">Raw Materials:</label><br>
+            <input type="number" id="yield" name="yield" required>
+            
+            <label for="viscosity">Viscosity:</label>
+            <input type="number" id="viscosity" name="viscosity" required>
+            
+            <label for="weight_lit">Weight / Lit:</label>
+            <input type="number" id="weight_lit" name="weight_lit" required>
+            
+            <label for="container_cost">Container Cost:</label>
+            <input type="number" id="container_cost" name="container_cost" required>
+            
+            <label for="transport_cost">Transport Cost:</label>
+            <input type="number" id="transport_cost" name="transport_cost" required>
+            
+            <label for="sales_cost">Sales Cost:</label>
+            <input type="number" id="sales_cost" name="sales_cost" required>
+            
+            <label for="misc_cost">Misc. Cost:</label>
+            <input type="number" id="misc_cost" name="misc_cost" required>
+            
+            <label for="raw_materials">Raw Materials:</label>
             <div id="materialFields">
                 <div class="materialField">
                     <label for="materialType1">Material Type:</label>
-                    <select id="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
+                    <select id="materialType1" name="materialType1" onchange="populateMaterialNames('materialType1', 'materialName1')">
                         <option value="Pigment">Pigment</option>
                         <option value="Additive">Additive</option>
                         <option value="Resin">Resin</option>
                         <option value="Thinner">Thinner</option>
                     </select>
                     <label for="materialName1">Material Name:</label>
-                    <select id="materialName1">
+                    <select id="materialName1" name="materialName1">
                     </select>
                     <label for="quantity1">Quantity:</label>
-                    <input type="number" id="quantity1" placeholder="Enter quantity...">
+                    <input type="number" id="quantity1" name="quantity1" placeholder="Enter quantity...">
                 </div>
             </div>
             <button type="button" onclick="addMaterialField()">Add Material</button>
@@ -50,7 +71,6 @@
             <div id="result"></div>
             <button type="submit">Submit</button>
             <button type="button" onclick="generateInvoice()">Generate Invoice</button>
-
         </form>
     </main>
 
@@ -91,7 +111,7 @@
                 "M1 50%": 125,
                 "M1 70%": 124,
                 "M6": 206,
-                "Mo 70%": 220,
+                "M0 70%": 220,
                 "MD": 129,
                 "MD 60%": 125,
                 "R 920": 160,
@@ -110,6 +130,7 @@
                 "ETHYLE": 230               
             }
         };
+
         const materialNames = {
             Pigment: ["P1", "P11", "P6", "P3", "P4", "P5", "P60", "P7", "P100", "P50", "P70", "Redoxide Powder", "White Whiting", "Talc"],
             Additive: ["A1", "A2", "HCO", "ACE", "PINCOIL", "BRIGHT", "CATALYST MATT", "ICLAY", "ICLAY JELLY 10%", "LEAK 10%", "OMEGA", "DH"],
@@ -120,7 +141,7 @@
         function populateMaterialNames(materialTypeSelectId, materialNameSelectId) {
             const materialType = document.getElementById(materialTypeSelectId).value;
             const materialNameSelect = document.getElementById(materialNameSelectId);
-            materialNameSelect.innerHTML = ''; // Clear previous options
+            materialNameSelect.innerHTML = ''; 
             materialNames[materialType].forEach(name => {
                 const option = document.createElement('option');
                 option.value = name;
@@ -149,11 +170,15 @@
                 <input type="number" id="quantity${newIndex}" placeholder="Enter quantity...">
             `;
             materialFields.appendChild(newField);
+            populateMaterialNames(`materialType${newIndex}`, `materialName${newIndex}`);
         }
+        document.addEventListener('DOMContentLoaded', () => {
+            populateMaterialNames('materialType1', 'materialName1');
+        });
 
         function calculateTotalRate() {
             const materialFields = document.querySelectorAll('.materialField');
-            let totalRate = 0;
+            let rawMaterialsRate = 0;
 
             materialFields.forEach((field, index) => {
                 const materialName = document.getElementById(`materialName${index + 1}`).value;
@@ -161,20 +186,29 @@
                 const quantity = parseInt(document.getElementById(`quantity${index + 1}`).value);
                 const price=materialPrices[materialType][materialName];
                 const rate = quantity * price;
-                totalRate += rate;
+                rawMaterialsRate+=rate;
             });
+            const containerCost = parseFloat(document.getElementById('container_cost').value) || 0;
+            const transportCost = parseFloat(document.getElementById('transport_cost').value) || 0;
+            const salesCost = parseFloat(document.getElementById('sales_cost').value) || 0;
+            const miscCost = parseFloat(document.getElementById('misc_cost').value) || 0;
+
+            const totalRate = rawMaterialsRate + containerCost + transportCost + salesCost + miscCost;
 
             document.getElementById('result').innerHTML = `The total calculated rate is: Rs ${totalRate.toFixed(2)}`;
-        }
+            const totalRateInput = document.createElement('input');
+            totalRateInput.type = 'hidden';
+            totalRateInput.name = 'total_rate';
+            totalRateInput.value = totalRate.toFixed(2);
+            document.querySelector('form').appendChild(totalRateInput);
 
-        // Initialize the first material name dropdown
-        document.addEventListener('DOMContentLoaded', () => {
-            populateMaterialNames('materialType1', 'materialName1');
-        });
+        }
         function generateInvoice() {
-        const formData = new FormData(document.querySelector('form'));
-        window.location.href = '/generate_invoice?' + new URLSearchParams(formData).toString();
-    }
+            const rateForm = document.getElementById('rateForm');
+            rateForm.action = '/generate_invoice';
+            rateForm.method = 'POST';
+            rateForm.submit();
+        }
     </script>
 </body>
 </html>
