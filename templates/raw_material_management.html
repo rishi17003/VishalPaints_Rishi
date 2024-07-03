@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Raw Material Management - Inventory Management System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Additional styles for table and buttons */
+        .editable {
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -21,15 +31,8 @@
     </header>
     <main>
         <h2>Raw Material Management</h2>
-        <form method="POST">
-            <label for="name">Material Name:</label>
-            <input type="text" id="name" name="name" required><br>
-            <label for="price">Price:</label>
-            <input type="number" id="price" name="price" step="any" required><br>
-            <label for="mat_type">Material Type:</label>
-            <input type="text" id="mat_type" name="mat_type" required><br>
-            <button type="submit">Add Material</button>
-        </form>
+
+        <!-- Table of Existing Raw Materials -->
         <h3>Existing Raw Materials</h3>
         <table>
             <thead>
@@ -38,19 +41,99 @@
                     <th>Name</th>
                     <th>Price</th>
                     <th>Type</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="materialsTableBody">
                 {% for material in raw_materials %}
                 <tr>
-                    <td>{{ material[0] }}</td>
-                    <td>{{ material[1] }}</td>
-                    <td>{{ material[2] }}</td>
-                    <td>{{ material[3] }}</td>
+                    <td>{{ material.id }}</td>
+                    <td contenteditable="true" class="editable" data-material-id="{{ material.id }}" data-field="name">{{ material.name }}</td>
+                    <td contenteditable="true" class="editable" data-material-id="{{ material.id }}" data-field="price">{{ material.price }}</td>
+                    <td contenteditable="true" class="editable" data-material-id="{{ material.id }}" data-field="mat_type">{{ material.mat_type }}</td>
+                    <td class="actions">
+                        <button onclick="saveMaterial({{ material.id }})">Save</button>
+                        <button class="delete-btn" onclick="deleteMaterial({{ material.id }})">Delete</button>
+                    </td>
                 </tr>
                 {% endfor %}
+                <!-- Row to Add New Material -->
+                <tr>
+                    <td>New</td>
+                    <td contenteditable="true" id="newName" class="editable" data-field="name"></td>
+                    <td contenteditable="true" id="newPrice" class="editable" data-field="price"></td>
+                    <td contenteditable="true" id="newMatType" class="editable" data-field="mat_type"></td>
+                    <td class="actions">
+                        <button onclick="addMaterial()">Add</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </main>
+
+    <script>
+        function saveMaterial(material_id) {
+            var row = document.querySelector(`tr td[data-material-id="${material_id}"]`).parentElement;
+            var name = row.querySelector('td[data-field="name"]').innerText;
+            var price = row.querySelector('td[data-field="price"]').innerText;
+            var mat_type = row.querySelector('td[data-field="mat_type"]').innerText;
+
+            fetch('/update_material', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `material_id=${encodeURIComponent(material_id)}&name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&mat_type=${encodeURIComponent(mat_type)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Material updated successfully');
+                }
+            });
+        }
+
+        function deleteMaterial(material_id) {
+            if (confirm('Are you sure you want to delete this material?')) {
+                fetch('/delete_material', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `material_id=${encodeURIComponent(material_id)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();  // Refresh the page to reflect the changes
+                    } else {
+                        alert('Failed to delete material');
+                    }
+                });
+            }
+        }
+
+        function addMaterial() {
+            var name = document.getElementById('newName').innerText;
+            var price = document.getElementById('newPrice').innerText;
+            var mat_type = document.getElementById('newMatType').innerText;
+
+            fetch('/add_material', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&mat_type=${encodeURIComponent(mat_type)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();  // Refresh the page to reflect the changes
+                } else {
+                    alert('Failed to add material');
+                }
+            });
+        }
+    </script>
 </body>
 </html>

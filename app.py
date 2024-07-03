@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
@@ -130,26 +130,43 @@ def product_history():
     cur.close()
     return render_template('product_history.html', products=products)
 
-@app.route('/raw_material_management', methods=['GET', 'POST'])
+@app.route('/raw_material_management', methods=['GET'])
 def raw_material_management():
-    if request.method == 'POST':
-        name = request.form['name']
-        price = request.form['price']
-        mat_type = request.form['mat_type']
-
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO raw_materials (name, price, mat_type) VALUES (%s, %s, %s)",
-                    (name, price, mat_type))
-        mysql.connection.commit()
-        cur.close()
-        return redirect(url_for('raw_material_management'))
-
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id,name,price,mat_type FROM raw_materials")
-    raw_materials = cur.fetchall()
-    cur.close()
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT id, name, price, mat_type FROM raw_materials WHERE deleted = FALSE")
+    raw_materials = cursor.fetchall()
     return render_template('raw_material_management.html', raw_materials=raw_materials)
 
+@app.route('/update_material', methods=['POST'])
+def update_material():
+    material_id = request.form['material_id']
+    name = request.form['name']
+    price = request.form['price']
+    mat_type = request.form['mat_type']
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("UPDATE raw_materials SET name=%s, price=%s, mat_type=%s WHERE id=%s", (name, price, mat_type, material_id))
+    mysql.connection.commit()
+    return jsonify(success=True)
+
+@app.route('/delete_material', methods=['POST'])
+def delete_material():
+    material_id = request.form['material_id']
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("DELETE FROM raw_materials WHERE id=%s", (material_id,))
+    mysql.connection.commit()
+    return jsonify(success=True)
+
+@app.route('/add_material', methods=['POST'])
+def add_material():
+    name = request.form['name']
+    price = request.form['price']
+    mat_type = request.form['mat_type']
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("INSERT INTO raw_materials (name, price, mat_type, deleted) VALUES (%s, %s, %s, FALSE)", (name, price, mat_type))
+    mysql.connection.commit()
+    return jsonify(success=True)
+
+    
 @app.route('/inventory_details')
 def inventory_details():
     cur = mysql.connection.cursor()
